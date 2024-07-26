@@ -89,6 +89,7 @@ class Input {
     const unityLicensingServer = getInput('unityLicensingServer') || '';
     const unityLicense = getInput('unityLicense') || (process.env['UNITY_LICENSE'] ?? '');
     let unitySerial = process.env['UNITY_SERIAL'] ?? '';
+    const skipActivation = getInput('skipActivation')?.toLowerCase() ?? 'false';
     const customParameters = getInput('customParameters') || '';
     const testMode = (getInput('testMode') || 'all').toLowerCase();
     const coverageOptions = getInput('coverageOptions') || '';
@@ -243,6 +244,7 @@ class Input {
       containerRegistryRepository,
       containerRegistryImageVersion,
       unitySerial,
+      skipActivation,
     };
   }
 }

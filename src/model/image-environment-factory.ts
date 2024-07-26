@@ -27,6 +27,7 @@ class ImageEnvironmentFactory {
         name: 'UNITY_LICENSING_SERVER',
         value: parameters.unityLicensingServer,
       },
+      { name: 'SKIP_ACTIVATION', value: parameters.skipActivation },
       { name: 'UNITY_VERSION', value: parameters.editorVersion },
       {
         name: 'USYM_UPLOAD_AUTH_TOKEN',

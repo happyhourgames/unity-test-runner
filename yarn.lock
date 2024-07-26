@@ -1541,6 +1541,11 @@ builtin-modules@^3.3.0:
   resolved "https://registry.npmjs.org/builtin-modules/-/builtin-modules-3.3.0.tgz"
   integrity sha512-zhaCDicdLuWN5UbN5IMnFqNMhNfo919sH85y2/ea+5Yg9TsTkeZxpL+JLbp6cgYFS4sRLp3YV4S6yDuqVWHYOw==
 
+cac@^6.6.1:
+  version "6.7.14"
+  resolved "https://registry.yarnpkg.com/cac/-/cac-6.7.14.tgz#804e1e6f506ee363cb0e3ccbb09cad5dd9870959"
+  integrity sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==
+
 cache-base@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/cache-base/-/cache-base-1.0.1.tgz"
@@ -5681,6 +5686,15 @@ union-value@^1.0.0:
     get-value "^2.0.6"
     is-extendable "^0.1.1"
     set-value "^2.0.1"
+
+unity-changeset@^1.6.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/unity-changeset/-/unity-changeset-1.7.0.tgz#92b08682e192cad7e339e29e0e47003f1b3857b7"
+  integrity sha512-B9t/yUjIw1hUiJtYlOLR3/E8tAwNdpkimZb4OtDj1gnpbh4yjEtEdnD3YXADK22GkI/l3E/LqE+Nn6AasOtVLA==
+  dependencies:
+    cac "^6.6.1"
+    jsdom "^16.4.0"
+    node-fetch "^2.6.7"
 
 universal-user-agent@^6.0.0:
   version "6.0.0"

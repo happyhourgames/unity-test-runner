@@ -1,45 +1,60 @@
 #!/usr/bin/env bash
 
-# Ensure machine ID is randomized for personal license activation
-if [[ "$UNITY_SERIAL" = F* ]]; then
-  echo "Randomizing machine ID for personal license activation"
-  dbus-uuidgen > /etc/machine-id && mkdir -p /var/lib/dbus/ && ln -sf /etc/machine-id /var/lib/dbus/machine-id
-fi
+#
+# Perform Activation
+#
 
-if [[ "$RUN_AS_HOST_USER" == "true" ]]; then
-  echo "Running as host user"
+if [ "$SKIP_ACTIVATION" != "true" ]; then
+  UNITY_LICENSE_PATH="/Library/Application Support/Unity"
 
-  fullProjectPath="$GITHUB_WORKSPACE/$PROJECT_PATH"
+  if [ ! -d "$UNITY_LICENSE_PATH" ]; then
+    echo "Creating Unity License Directory"
+    sudo mkdir -p "$UNITY_LICENSE_PATH"
+    sudo chmod -R 777 "$UNITY_LICENSE_PATH"
+  fi;
 
-  # Stop on error if we can't set up the user
-  set -e
+  ACTIVATE_LICENSE_PATH="$ACTION_FOLDER/BlankProject"
+  mkdir -p "$ACTIVATE_LICENSE_PATH"
 
-  # Get host user/group info so we create files with the correct ownership
-  USERNAME=$(stat -c '%U' "$fullProjectPath")
-  USERID=$(stat -c '%u' "$fullProjectPath")
-  GROUPNAME=$(stat -c '%G' "$fullProjectPath")
-  GROUPID=$(stat -c '%g' "$fullProjectPath")
-
-  groupadd -g $GROUPID $GROUPNAME
-  useradd -u $USERID -g $GROUPID $USERNAME
-  usermod -aG $GROUPNAME $USERNAME
-  mkdir -p "/home/$USERNAME"
-  chown $USERNAME:$GROUPNAME "/home/$USERNAME"
-
-  # Normally need root permissions to access when using su
-  chmod 777 /dev/stdout
-  chmod 777 /dev/stderr
-
-  # Don't stop on error when running our scripts as error handling is baked in
-  set +e
-
-  # Switch to the host user so we can create files with the correct ownership
-  su $USERNAME -c "$SHELL -c 'source /steps/run_steps.sh'"
+  source $ACTION_FOLDER/platforms/mac/steps/activate.sh
 else
-  echo "Running as root"
-
-  # Run as root
-  source /steps/run_steps.sh
+  echo "Skipping activation"
 fi
 
-exit $?
+#
+# Run Build
+#
+
+source $ACTION_FOLDER/platforms/mac/steps/build.sh
+
+#
+# License Cleanup
+#
+
+if [ "$SKIP_ACTIVATION" != "true" ]; then
+  source $ACTION_FOLDER/platforms/mac/steps/return_license.sh
+  rm -r "$ACTIVATE_LICENSE_PATH"
+fi
+
+#
+# Instructions for debugging
+#
+
+if [[ $BUILD_EXIT_CODE -gt 0 ]]; then
+echo ""
+echo "###########################"
+echo "#         Failure         #"
+echo "###########################"
+echo ""
+echo "Please note that the exit code is not very descriptive."
+echo "Most likely it will not help you solve the issue."
+echo ""
+echo "To find the reason for failure: please search for errors in the log above and check for annotations in the summary view."
+echo ""
+fi;
+
+#
+# Exit with code from the build step.
+#
+
+exit $BUILD_EXIT_CODE
